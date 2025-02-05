@@ -6,6 +6,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import CoursePage from './pages/CoursePage';
 import CourseForm from './pages/CourseForm';
+import PageHeader from './components/PageHeader';
+import Container from './components/Container';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,20 +15,15 @@ function App() {
 
   return (
     <Router>
-      <div>
-        <h1>Welcome</h1>
-        {isLoggedIn ? (
-          <p>Admin</p>
-        ) : (
-          <p>Visitor</p>
-        )}
+      <Container>
+      <PageHeader isLoggedIn={isLoggedIn} />
       <Routes>
         <Route path="/" element={<Home/>} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/course/:courseId" element={<CoursePage/>} />
         <Route path="/course-form" element={<CourseForm/>} />
       </Routes>
-      </div>
+      </Container>
     </Router>
   );
 }

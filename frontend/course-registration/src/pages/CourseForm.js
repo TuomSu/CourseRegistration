@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { addCourse } from '../services/courseService'; // Lisää kurssinlisäysfunktio service-tiedostosta
 import { useNavigate } from 'react-router-dom';
+import InputField from '../components/InputField';
+import { Container, Button, TextField } from '@mui/material';
 
 const CourseForm = () => {
   const [title, setTitle] = useState('');
@@ -41,27 +43,40 @@ const CourseForm = () => {
   };
 
   return (
-    <div>
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Kurssin nimi:</label>
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-      </div>
-      <div>
-        <label>Kurssin päivämäärä:</label>
-        <input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} required />
-      </div>
-      <div>
-        <label>Enimmäisosallistujat:</label>
-        <input type="number" value={maxParticipants} onChange={(e) => setMaxParticipants(e.target.value)} required />
-      </div>
-      <div>
-        <label>Kurssikuva:</label>
-        <input type="file" onChange={handleFileChange} accept="image/*" />
-      </div>
-      <button type="submit">Lisää kurssi</button>
-    </form>
-    <button onClick={() => navigate('/')}>Takaisin kurssilistaukseen</button></div>
+    <div style={{ textAlign: 'center', maxWidth: '500px', margin: '0 auto' }}>
+      <h2>Lisää uusi kurssi</h2>
+      <form onSubmit={handleSubmit}>
+        <InputField
+          label="Kurssin nimi:"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <InputField
+          label="Kurssin päivämäärä:"
+          type="datetime-local"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          required
+        />
+        <InputField
+          label="Enimmäisosallistujat:"
+          type="number"
+          value={maxParticipants}
+          onChange={(e) => setMaxParticipants(e.target.value)}
+          required
+        />
+        <InputField
+          label="Kurssikuva:"
+          type="file"
+          onChange={handleFileChange}
+          accept="image/*"
+        />
+        <Button type="submit">Lisää kurssi</Button>
+      </form>
+      <Button onClick={() => navigate('/')}>Takaisin kurssilistaukseen</Button>
+    </div>
   );
 };
 

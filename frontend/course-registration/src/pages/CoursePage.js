@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { registerForCourse, getCourseById, getCourseParticipants } from '../services/courseService';
+import { registerForCourse, getCourseById, getCourseParticipants, getCourses } from '../services/courseService';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Container, Button, TextField, List, ListItem, ListItemText, ListItemIcon, Divider, Box, Card, CardContent, Typography} from '@mui/material';
+import moment from 'moment';
 
 function CoursePage() {
     const { courseId } = useParams();
@@ -30,15 +32,24 @@ function CoursePage() {
     const fetchCourse = async () => {
       try {
         const data = await getCourseById(courseId);
-        setCourse(data);
+
+        // Muotoillaan kurssien päivämäärät moment.js:llä ennen niiden tallentamista
+    const formattedCourse = {
+      ...data,
+      formattedDate: moment(data.date).format('DD.MM.YYYY HH:mm'), 
+    };
+
+        setCourse(formattedCourse);
       } catch (error) {
         console.error('Failed to fetch course:', error);
       }
     };
+
     fetchCourse();
     fetchParticipants();
   }, [courseId]);
 
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -65,45 +76,76 @@ function CoursePage() {
 
   return (
     <div>
-      <h2>{course.title}</h2>
-      <p>Date: {course.date}</p>
-      <p>Max Participants: {course.maxParticipants}</p>
-      <p>Current Participants: {course.currentParticipants}</p>
+      {course && ( // Check if course exists before rendering
+      <List>
+        <ListItem 
+          alignItems="flex-start" 
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', mb: 2 }}
+        >
+          <ListItemText
+            primary={course.title}
+            secondary={
+              <>
+                <span>{course.formattedDate}</span><br />
+                <span>{course.currentParticipants}/{course.maxParticipants} participants</span>
+              </>
+            }
+          />
+        </ListItem>
+      </List>
+      )}
+      
 
-      <h3>Ilmoittaudu kurssille</h3>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Nimi:</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Sähköposti:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="phone">Puhelin:</label>
-          <input
-            type="tel"
-            id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Ilmoittaudu</button>
-      </form>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Card sx={{ maxWidth: 400, width: "100%", p: 3, boxShadow: 3 }}>
+        <CardContent>
+          <Typography variant="h5" gutterBottom textAlign="center">
+            Ilmoittaudu kurssille
+          </Typography>
+
+          <form onSubmit={handleSubmit}>
+            <TextField
+              fullWidth
+              label="Nimi"
+              variant="outlined"
+              margin="normal"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <TextField
+              fullWidth
+              label="Sähköposti"
+              type="email"
+              variant="outlined"
+              margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <TextField
+              fullWidth
+              label="Puhelin"
+              type="tel"
+              variant="outlined"
+              margin="normal"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+            <Button 
+              type="submit" 
+              variant="contained" 
+              color="primary" 
+              fullWidth 
+              sx={{ mt: 2 }}
+            >
+              Ilmoittaudu
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </Box>
 
       {message && <p>{message}</p>}
       {participants.length > 0 && (

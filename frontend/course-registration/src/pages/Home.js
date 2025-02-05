@@ -5,6 +5,8 @@ import axios from 'axios';
 import moment from 'moment';
 import {jwtDecode} from 'jwt-decode'; 
 import CourseForm from './CourseForm';
+import { Container, Button, TextField } from '@mui/material';
+import { List, ListItem, ListItemText, ListItemIcon, Divider } from '@mui/material';
 
 function Home() {
 const [isAdmin, setIsAdmin] = useState(false); 
@@ -62,27 +64,46 @@ const [isAdmin, setIsAdmin] = useState(false);
   return (
     <div>
         <div>
-        <Link to="/login">
-          <button>Admin - Kirjaudu sisään</button>
+        {/*<Link to="/login">
+          <Button>Admin - Kirjaudu sisään</Button>
         </Link>
-        <button onClick={handleLogout}>Kirjaudu ulos</button>
+        <Button onClick={handleLogout}>Kirjaudu ulos</Button>*/}
         {isAdmin && (
-        <button onClick={() => navigate('/course-form')}>Lisää uusi kurssi</button>
+        <Button onClick={() => navigate('/course-form')}>Lisää uusi kurssi</Button>
       )}
       </div>
       
       <h1>Available Courses</h1>
       
-      <ul>
+      <List>
         {courses.map(course => (
-          <li key={course._id}>
-           <p>{course.title} - {course.formattedDate} - {course.currentParticipants}/{course.maxParticipants} participants</p>
-            <button onClick={() => handleCourseDetails(course._id)}>
-              Lisätietoja ja ilmoittautuminen
-            </button>
-          </li>
-        ))}
-      </ul>
+          <React.Fragment key={course._id}>
+           <ListItem 
+          alignItems="flex-start" 
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', mb: 2 }}
+        >
+          <ListItemText
+            primary={course.title}
+            secondary={
+              <>
+                <span>{course.formattedDate}</span><br />
+                <span>{course.currentParticipants}/{course.maxParticipants} participants</span>
+              </>
+            }
+          />
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => handleCourseDetails(course._id)}
+            sx={{ mt: 1 }}
+          >
+            Lisätietoja ja ilmoittautuminen
+          </Button>
+        </ListItem>
+        <Divider variant="inset" component="li" />
+      </React.Fragment>
+    ))}
+  </List>
     </div>
   );
 }
